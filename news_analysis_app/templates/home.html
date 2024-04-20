@@ -2,18 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Select News Source</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #74AFAD;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        form {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        button {
+            background-color: #e8e8e8;
+            color: #333;
+            padding: 17px 20px;
+            border: 2px solid transparent;
+            border-radius: 100px;
+            width: 100%;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        button.active {
+            border-color: #4CAF50;
+            background-color: #e0f7fa;
+            color: #2c3e50;
+        }
+        .submit-button {
+            background-color: #4CAF50;
+            color: #fff;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            width: 50%;
+        }
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Select News Source</h1>
+    <h1>Select a News Source</h1>
     <form action="/scrape" method="post">
-        <label for="source">Choose a news source:</label>
-        <select name="source" id="source">
-            <option value="The Indian Express">The Indian Express</option>
-            <option value="Times of India">Times of India</option>
-        </select>
-        <button type="submit">Scrape News</button>
+        <button type="button" onclick="selectSource('The Indian Express', this)">The Indian Express</button>
+        <button type="button" onclick="selectSource('Times of India', this)">Times of India</button>
+        <input type="hidden" name="source" id="selectedSource">
+        <button type="submit" class="submit-button">Generate News</button>
     </form>
+    <script>
+        function selectSource(source, element) {
+            document.getElementById('selectedSource').value = source;
+            var buttons = document.querySelectorAll('form button[type="button"]');
+            buttons.forEach(btn => {
+                btn.classList.remove('active'); // Remove 'active' from all buttons
+            });
+            element.classList.add('active'); // Add 'active' to the clicked button
+        }
+    </script>
 </body>
 </html>

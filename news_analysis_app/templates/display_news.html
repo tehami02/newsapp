@@ -3,14 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Articles</title>
+    <title>Display News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 40px;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>News Articles from {{ source }}</h1>
+    <h1>Display News</h1>
     <ul>
         {% for article in articles %}
-        <li><a href="/analyze?url={{ article.link }}">{{ article.title }}</a></li>
+        <li>
+            <a href="{{ url_for('analyze', url=article.link) }}">{{ article.title }}</a>
+        </li>
         {% endfor %}
     </ul>
+    <!-- Form to download CSV -->
+    <form action="{{ url_for('save_news') }}" method="post">
+        {% for article in articles %}
+            <input type="hidden" name="headlines" value="{{ article.title }}">
+            <input type="hidden" name="urls" value="{{ article.link }}">
+        {% endfor %}
+        <button type="submit">Download News as CSV</button>
+    </form>
 </body>
 </html>

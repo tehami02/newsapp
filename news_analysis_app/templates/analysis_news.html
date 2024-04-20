@@ -3,17 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Analysis</title>
+    <title>Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 40px;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        p, textarea {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: calc(100% - 30px);
+            height: 150px;
+            resize: none; /* Disable resizing */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Analyzed News Article</h1>
-    <h2>Original Article</h2>
-    <p>{{ article_content }}</p>
-    
-    <h2>Preprocessed Text</h2>
-    <p>{{ preprocessed_text }}</p>
-    
-    <h2>Word Cloud:</h2>
-    <img src="data:image/png;base64,{{ wordcloud_img }}" alt="Word Cloud">
+    <h1>Analysis</h1>
+    <section>
+        <h2>Article Content:</h2>
+        <p>{{ article_content }}</p>
+    </section>
+
+    <section>
+        <h2>Preprocessed Text:</h2>
+        <textarea rows="10" cols="50" readonly>{{ preprocessed_text }}</textarea>
+        <br>
+        <a href="{{ url_for('download_preprocessed_data') }}" download="preprocessed_data.csv">Download Preprocessed Data</a>
+    </section>
+
+    <section>
+        <h2>Word Cloud:</h2>
+        <a href="data:image/png;base64,{{ wordcloud_img }}" download="wordcloud.png">
+            <img src="data:image/png;base64,{{ wordcloud_img }}" alt="Word Cloud">
+        </a>
+    </section>
 </body>
 </html>

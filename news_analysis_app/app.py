@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Response,session
 import requests
+import csv
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 import feedparser
 import base64
-from io import BytesIO
+from io import BytesIO,StringIO
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
@@ -13,7 +14,7 @@ from gensim.parsing.preprocessing import STOPWORDS
 from wordcloud import WordCloud
 
 app = Flask(__name__)
-
+app.secret_key = '89765thio8'
 # Download NLTK data
 nltk.download('wordnet')
 
@@ -49,6 +50,7 @@ def display_news(source):
     # Fetch news articles from RSS feed
     feed = feedparser.parse(feed_url)
     articles = feed.entries[:35]  # Get top news articles
+    # session['articles'] = [{'title': entry.title, 'link': entry.link} for entry in articles]
 
     return render_template('display_news.html', articles=articles, source=source)
 
@@ -81,7 +83,8 @@ def analyze():
 
         # Generate word cloud
         text_combined = ' '.join(preprocessed_text)
-        print("Text for word cloud:", text_combined)
+        session['text_combined'] = text_combined
+        # print("Text for word cloud:", preprocessed_text)
         wordcloud = WordCloud(max_font_size=50, max_words=100, background_color="white").generate(text_combined)
         # Create a new figure for plotting
         plt.figure()
@@ -99,10 +102,76 @@ def analyze():
         image_base64 = base64.b64encode(buf.read()).decode('utf-8')
         buf.close()
 
+        # Store in session
+        session['wordcloud_img'] = image_base64
 
         return render_template('analysis_news.html', article_content=article_content, preprocessed_text=preprocessed_text, wordcloud_img=image_base64)
     except Exception as e:
         return render_template('error.html', message="Failed to generate word cloud. Error: {}".format(str(e)))
+
+
+@app.route('/save_news', methods=['POST'])
+def save_news():
+    headlines = request.form.getlist('headlines')
+    urls = request.form.getlist('urls')
+
+    if not headlines or not urls:
+        return "No data to download", 400
+
+    from io import StringIO
+    import csv
+    from flask import Response
+
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Headline', 'URL'])
+    for headline, url in zip(headlines, urls):
+        writer.writerow([headline, url])
+
+    output.seek(0)
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=news_headlines.csv"}
+    )
+
+
+
+@app.route('/download_preprocessed_data')
+def download_preprocessed_data():
+    text_combined = session.get('text_combined', None)
+    if not text_combined:
+        return "No preprocessed data found", 404
+
+    output = StringIO()
+    writer = csv.writer(output)
+    # Split the text_combined back into words for individual rows, if needed
+    for word in text_combined.split():
+        writer.writerow([word])  # Each word in its own row
+
+    output.seek(0)
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=preprocessed_data.csv"}
+    )
+
+
+@app.route('/download_wordcloud')
+def download_wordcloud():
+    wordcloud_img = session.get('wordcloud_img')
+    if not wordcloud_img:
+        return "No wordcloud image found", 404
+
+    # Decode the base64 encoded image
+    img_data = base64.b64decode(wordcloud_img)
+
+    # Prepare response to send the WordCloud image for download
+    return Response(
+        img_data,
+        mimetype="image/png",
+        headers={"Content-Disposition": "attachment;filename=wordcloud.png"}
+    )
 
 
 if __name__ == "__main__":
