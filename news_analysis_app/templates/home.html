@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Select News Source</h1>
+    <form action="/scrape" method="post">
+        <label for="source">Choose a news source:</label>
+        <select name="source" id="source">
+            <option value="The Indian Express">The Indian Express</option>
+            <option value="Times of India">Times of India</option>
+        </select>
+        <button type="submit">Scrape News</button>
+    </form>
+</body>
+</html>

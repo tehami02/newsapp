@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Analysis</title>
+</head>
+<body>
+    <h1>Analyzed News Article</h1>
+    <h2>Original Article</h2>
+    <p>{{ article_content }}</p>
+    
+    <h2>Preprocessed Text</h2>
+    <p>{{ preprocessed_text }}</p>
+    
+    <h2>Word Cloud:</h2>
+    <img src="data:image/png;base64,{{ wordcloud_img }}" alt="Word Cloud">
+</body>
+</html>
