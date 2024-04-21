@@ -54,6 +54,8 @@
         {% for article in articles %}
         <li>
             <a href="{{ url_for('analyze', url=article.link) }}">{{ article.title }}</a>
+            <input type="hidden" name="headlines" value="{{ article.title }}">
+            <input type="hidden" name="urls" value="{{ article.link }}">
         </li>
         {% endfor %}
     </ul>
@@ -65,5 +67,6 @@
         {% endfor %}
         <button type="submit">Download News as CSV</button>
     </form>
+    
 </body>
 </html>
